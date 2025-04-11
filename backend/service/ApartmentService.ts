@@ -27,6 +27,26 @@ export class ApartmentService {
   async findApartmentByName(name: string): Promise<Apartment|null> {
     return this.apartmentRepository.findOne({ where: { name }, relations: ['project', 'salesPerson'] });
   }
+  async findAllApartments(page: number = 1,limit: number = 10): Promise<{
+    apartments: Apartment[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;}> {
+    const [apartments, total] = await this.apartmentRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: ['project', 'salesPerson'],
+    });
+  
+    return {
+      apartments,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 
   async assignProjectToApartment(apartmentId: number, projectId: number): Promise<Apartment> {
     //incase when creating apartment it was assigned to the wrong project
