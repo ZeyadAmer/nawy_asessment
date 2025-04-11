@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Query, NotFoundException, HttpCode, HttpStatus } from '@nestjs/common';
 import { ProjectService } from '../service/ProjectService';
 import { ProjectDTO } from '../repositories/Project';
 
@@ -7,8 +7,14 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async createProject(@Body() projectDto: ProjectDTO) {
-    return this.projectService.createProject(projectDto);
+    const project = await this.projectService.createProject(projectDto);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Project created successfully',
+      project,
+    };
   }
 
   @Get()
@@ -25,7 +31,16 @@ export class ProjectController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    return this.projectService.findApartmentsByProjectById(id, page, limit);
+    const result = await this.projectService.findApartmentsByProjectById(id, page, limit);
+    if (!result.project) {
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Apartments retrieved successfully',
+      project: result.project,
+      apartments: result.apartments,
+    };
   }
 
   @Get('by-name/:name/apartments')
@@ -34,6 +49,15 @@ export class ProjectController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    return this.projectService.findApartmentsByProjectByName(name, page, limit);
+    const result = await this.projectService.findApartmentsByProjectByName(name, page, limit);
+    if (!result.project) {
+      throw new NotFoundException(`Project with name ${name} not found`);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Apartments retrieved successfully',
+      project: result.project,
+      apartments: result.apartments,
+    };
   }
 }

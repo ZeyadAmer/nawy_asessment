@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Apartment, ApartmentDTO } from '../repositories/Apartment';
@@ -52,12 +52,12 @@ export class ApartmentService {
     //incase when creating apartment it was assigned to the wrong project
   const apartment = await this.findApartmentById(apartmentId);
   if (!apartment) {
-    throw new Error('Apartment not found');
+    throw new NotFoundException(`Apartment with ID ${apartmentId} not found`);
   }
 
   const project = await this.projectRepository.findOne({ where: { id: projectId } });
   if (!project) {
-    throw new Error('Project not found');
+    throw new NotFoundException(`Project with ID ${projectId} not found`);
   }
   
   apartment.project = project; 
