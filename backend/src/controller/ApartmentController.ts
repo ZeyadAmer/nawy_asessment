@@ -9,6 +9,11 @@ export class ApartmentController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createApartment(@Body() apartmentDto: ApartmentDTO) {
+    const parsed = ApartmentDTO.safeParse(apartmentDto);
+        
+        if (!parsed.success) {
+          throw new Error('Validation failed');
+        }
     const apartment = await this.apartmentService.createApartment(apartmentDto);
     return {
       statusCode: HttpStatus.CREATED,

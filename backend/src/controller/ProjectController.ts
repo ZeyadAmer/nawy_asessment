@@ -9,6 +9,11 @@ export class ProjectController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createProject(@Body() projectDto: ProjectDTO) {
+    const parsed = ProjectDTO.safeParse(projectDto);
+    
+    if (!parsed.success) {
+      throw new Error('Validation failed');
+    }
     const project = await this.projectService.createProject(projectDto);
     return {
       statusCode: HttpStatus.CREATED,

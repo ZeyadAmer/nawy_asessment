@@ -43,5 +43,5 @@ exports.ProjectDTO = zod_1.z.object({
     name: zod_1.z.string().min(3),
     area: zod_1.z.string().min(3),
     address: zod_1.z.string().min(5),
-    apartmentIds: zod_1.z.array(zod_1.z.number().min(1)),
+    apartmentIds: zod_1.z.array(zod_1.z.number().min(1)).optional(),
 });

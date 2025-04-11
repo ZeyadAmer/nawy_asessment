@@ -23,7 +23,7 @@ export const ProjectDTO = z.object({
     name: z.string().min(3),
     area: z.string().min(3),  
     address: z.string().min(5), 
-    apartmentIds: z.array(z.number().min(1)),
+    apartmentIds: z.array(z.number().min(1)).optional(),
   });
 export type ProjectDTO = z.infer<typeof ProjectDTO>;
   

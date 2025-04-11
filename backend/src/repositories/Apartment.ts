@@ -33,7 +33,7 @@ export class Apartment {
   @ManyToOne(() => Project, (project) => project.apartments) 
   project!: Project;
 
-  @OneToOne(() => SalesPerson, (salesPerson) => salesPerson.apartment)
+  @ManyToOne(() => SalesPerson, (salesPerson) => salesPerson.apartments)
   salesPerson!: SalesPerson;
   
 }

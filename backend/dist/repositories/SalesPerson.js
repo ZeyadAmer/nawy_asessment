@@ -37,10 +37,9 @@ __decorate([
     __metadata("design:type", String)
 ], SalesPerson.prototype, "additionalInfo", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Apartment_1.Apartment),
-    (0, typeorm_1.JoinColumn)({ name: 'apartment_id' }),
-    __metadata("design:type", Apartment_1.Apartment)
-], SalesPerson.prototype, "apartment", void 0);
+    (0, typeorm_1.OneToMany)(() => Apartment_1.Apartment, (apartment) => apartment.project),
+    __metadata("design:type", Array)
+], SalesPerson.prototype, "apartments", void 0);
 exports.SalesPerson = SalesPerson = __decorate([
     (0, typeorm_1.Entity)()
 ], SalesPerson);

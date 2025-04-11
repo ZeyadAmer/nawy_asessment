@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Apartment } from './Apartment'; 
 import { z } from "zod";
 
@@ -19,9 +19,8 @@ export class SalesPerson {
   @Column({ nullable: true })
   additionalInfo?: string; 
 
-  @OneToOne(() => Apartment)
-  @JoinColumn({ name: 'apartment_id' }) 
-  apartment!: Apartment;
+  @OneToMany(() => Apartment, (apartment) => apartment.project)  
+    apartments!: Apartment[];
 }
 export const SalesPersonDTO = z.object({
     name: z.string().min(3), 

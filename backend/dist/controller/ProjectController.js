@@ -21,6 +21,10 @@ let ProjectController = class ProjectController {
         this.projectService = projectService;
     }
     async createProject(projectDto) {
+        const parsed = Project_1.ProjectDTO.safeParse(projectDto);
+        if (!parsed.success) {
+            throw new Error('Validation failed');
+        }
         const project = await this.projectService.createProject(projectDto);
         return {
             statusCode: common_1.HttpStatus.CREATED,

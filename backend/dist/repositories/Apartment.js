@@ -55,7 +55,7 @@ __decorate([
     __metadata("design:type", Project_1.Project)
 ], Apartment.prototype, "project", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => SalesPerson_1.SalesPerson, (salesPerson) => salesPerson.apartment),
+    (0, typeorm_1.ManyToOne)(() => SalesPerson_1.SalesPerson, (salesPerson) => salesPerson.apartments),
     __metadata("design:type", SalesPerson_1.SalesPerson)
 ], Apartment.prototype, "salesPerson", void 0);
 exports.Apartment = Apartment = __decorate([
