@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { CurrencyCode } from '../enums/CurrencyCode.enum';
 import { Project } from './Project';
 import { SalesPerson } from './SalesPerson';

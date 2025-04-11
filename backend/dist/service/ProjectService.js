@@ -17,8 +17,10 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const Project_1 = require("../repositories/Project");
+const Apartment_1 = require("../repositories/Apartment");
 let ProjectService = class ProjectService {
-    constructor(projectRepository) {
+    constructor(apartmentRepository, projectRepository) {
+        this.apartmentRepository = apartmentRepository;
         this.projectRepository = projectRepository;
     }
     async createProject(projectDto) {
@@ -43,45 +45,29 @@ let ProjectService = class ProjectService {
         if (!project) {
             return { project: null, apartments: [], total: 0, page, limit, totalPages: 0 };
         }
-        const [apartments, total] = await this.apartmentRepository.findAndCount({
-            where: { project: { id } },
-            skip: (page - 1) * limit,
-            take: limit,
-            relations: ['salesPerson'],
-        });
+        const [apartments, total] = await this.apartmentRepository
+            .createQueryBuilder('apartment')
+            .leftJoinAndSelect('apartment.salesPerson', 'salesPerson')
+            .where('apartment.projectId = :id', { id })
+            .skip((page - 1) * limit)
+            .take(limit)
+            .getManyAndCount();
+        const totalPages = Math.ceil(total / limit);
         return {
             project,
             apartments,
             total,
             page,
             limit,
-            totalPages: Math.ceil(total / limit),
-        };
-    }
-    async findApartmentsByProjectByName(name, page = 1, limit = 10) {
-        const project = await this.projectRepository.findOne({ where: { name } });
-        if (!project) {
-            return { project: null, apartments: [], total: 0, page, limit, totalPages: 0 };
-        }
-        const [apartments, total] = await this.apartmentRepository.findAndCount({
-            where: { project: { id: project.id } },
-            skip: (page - 1) * limit,
-            take: limit,
-            relations: ['salesPerson'],
-        });
-        return {
-            project,
-            apartments,
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
+            totalPages,
         };
     }
 };
 exports.ProjectService = ProjectService;
 exports.ProjectService = ProjectService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(Project_1.Project)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(0, (0, typeorm_1.InjectRepository)(Apartment_1.Apartment)),
+    __param(1, (0, typeorm_1.InjectRepository)(Project_1.Project)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], ProjectService);

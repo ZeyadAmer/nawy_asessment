@@ -43,20 +43,7 @@ let ProjectController = class ProjectController {
         return {
             statusCode: common_1.HttpStatus.OK,
             message: 'Apartments retrieved successfully',
-            project: result.project,
-            apartments: result.apartments,
-        };
-    }
-    async getApartmentsByProjectName(name, page = 1, limit = 10) {
-        const result = await this.projectService.findApartmentsByProjectByName(name, page, limit);
-        if (!result.project) {
-            throw new common_1.NotFoundException(`Project with name ${name} not found`);
-        }
-        return {
-            statusCode: common_1.HttpStatus.OK,
-            message: 'Apartments retrieved successfully',
-            project: result.project,
-            apartments: result.apartments,
+            result
         };
     }
 };
@@ -86,15 +73,6 @@ __decorate([
     __metadata("design:paramtypes", [Number, Number, Number]),
     __metadata("design:returntype", Promise)
 ], ProjectController.prototype, "getApartmentsByProjectId", null);
-__decorate([
-    (0, common_1.Get)('by-name/:name/apartments'),
-    __param(0, (0, common_1.Param)('name')),
-    __param(1, (0, common_1.Query)('page')),
-    __param(2, (0, common_1.Query)('limit')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Number, Number]),
-    __metadata("design:returntype", Promise)
-], ProjectController.prototype, "getApartmentsByProjectName", null);
 exports.ProjectController = ProjectController = __decorate([
     (0, common_1.Controller)('projects'),
     __metadata("design:paramtypes", [ProjectService_1.ProjectService])

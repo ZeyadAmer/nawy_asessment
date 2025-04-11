@@ -21,6 +21,10 @@ let ApartmentController = class ApartmentController {
         this.apartmentService = apartmentService;
     }
     async createApartment(apartmentDto) {
+        const parsed = Apartment_1.ApartmentDTO.safeParse(apartmentDto);
+        if (!parsed.success) {
+            throw new Error('Validation failed');
+        }
         const apartment = await this.apartmentService.createApartment(apartmentDto);
         return {
             statusCode: common_1.HttpStatus.CREATED,
