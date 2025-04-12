@@ -8,6 +8,9 @@
     "zod": "^3.24.2"
   },
   "scripts": {
-    "start": "nest start"
+  "start": "nest start",                 
+  "start:prod": "node dist/Main.js",        
+  "build": "nest build",                 
+  "test": "jest"
   }
 }

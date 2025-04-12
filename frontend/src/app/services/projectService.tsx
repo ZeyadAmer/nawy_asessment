@@ -20,9 +20,9 @@ export const projectService = {
       throw error;
     }
   },
-  getApartmentsByProjectId: async (projectId:number,page: number = 1) => {
+  getApartmentsByProjectId: async (projectId:number,page: number) => {
     try {
-      const response = await axios.get(`${API_URL}/projects/${projectId}/apartments`);
+      const response = await axios.get(`${API_URL}/projects/${projectId}/apartments?page=${page}`);
       return response;
     } catch (error) {
       throw error;

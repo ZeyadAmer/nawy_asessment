@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Backend Service
+  backend:
+    build:
+      context: ./backend  # Path to your backend Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"  # Map port 8080 to container's 8080
+    depends_on:
+      - db  # Wait for the DB to be ready
+    environment:
+      - DATABASE_URL=postgresql://postgres:PostgrePassword1@db:5432/nawy  # DB connection string
+    networks:
+      - app-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend  # Path to your frontend Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"  # Map port 3000 to container's 3000
+    depends_on:
+      - backend  # Ensure backend is running before frontend
+    networks:
+      - app-network
+
+  # Database Service (PostgreSQL example)
+  db:
+    image: postgres:13-alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: PostgrePassword1
+      POSTGRES_DB: nawy
+    ports:
+      - "5432:5432"  # Expose DB port
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persistent storage
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+    driver: local  # Persist database data on your local machine
+
+networks:
+  app-network:
+    driver: bridge  # Connect all services to the same network

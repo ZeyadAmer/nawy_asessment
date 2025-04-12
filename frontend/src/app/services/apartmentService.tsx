@@ -21,16 +21,6 @@ export const apartmentService = {
         }
       },
 
-  getApartmentsByProjectId: async (projectId: number, page: number = 1, limit: number = 10) => {
-    try {
-      const response = await axios.get(`${API_URL}/apartments/by-project/${projectId}`, {
-        params: { page, limit },
-      });
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  },
 
   getApartmentById: async (apartmentId: number) => {
     try {

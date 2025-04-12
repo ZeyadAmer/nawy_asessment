@@ -12,8 +12,8 @@ import { SalesPerson } from './repositories/SalesPerson';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres', // Use PostgreSQL
-      host: 'localhost', // PostgreSQL host
-      port: 8042, // Default PostgreSQL port
+      host: 'db', // PostgreSQL host
+      port: 5432, 
       username: 'postgres', // Database username
       password: 'PostgrePassword1', // Database password
       database: 'nawy',
