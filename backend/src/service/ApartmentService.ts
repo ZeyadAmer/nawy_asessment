@@ -3,22 +3,40 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Apartment, ApartmentDTO } from '../repositories/Apartment';
 import { Project } from '../repositories/Project';
+import { SalesPerson } from '../repositories/SalesPerson';
+
 
 @Injectable()
 export class ApartmentService {
+  
   constructor(
     @InjectRepository(Apartment)
     private readonly apartmentRepository: Repository<Apartment>,
 
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
+    
+    @InjectRepository(SalesPerson)
+    private readonly salesPersonRepository: Repository<SalesPerson>,
   ) {}
 
   async createApartment(apartmentDto: ApartmentDTO): Promise<Apartment> {
-    const apartment = this.apartmentRepository.create(apartmentDto);
-    await this.apartmentRepository.save(apartment);
-    return apartment;
+    const project = await this.projectRepository.findOne({ where: { id: apartmentDto.projectId } });
+    const salesPerson = await this.salesPersonRepository.findOne({ where: { id: apartmentDto.salesPersonId } });
+  
+    if (!project || !salesPerson) {
+      throw new Error('Invalid projectId or salesPersonId');
+    }
+  
+    const apartment = this.apartmentRepository.create({
+      ...apartmentDto,
+      project,
+      salesPerson,
+    });
+  
+    return await this.apartmentRepository.save(apartment);
   }
+  
 
   async findApartmentById(id: number): Promise<Apartment|null> {
     return this.apartmentRepository.findOne({ where: { id }, relations: ['project', 'salesPerson'] });
@@ -37,6 +55,9 @@ export class ApartmentService {
       skip: (page - 1) * limit,
       take: limit,
       relations: ['project', 'salesPerson'],
+      order: {
+        id: 'ASC',
+    },
     });
   
     return {
@@ -62,6 +83,28 @@ export class ApartmentService {
   
   apartment.project = project; 
   return this.apartmentRepository.save(apartment);
+}
+async findAllUsers(page: number = 1,limit: number = 10): Promise<{
+  salesPerson: SalesPerson[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;}> {
+  const [salesPerson, total] = await this.salesPersonRepository.findAndCount({
+    skip: (page - 1) * limit,
+    take: limit,
+    order: {
+      id: 'ASC',
+  },
+  });
+
+  return {
+    salesPerson,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
 }
 
 }

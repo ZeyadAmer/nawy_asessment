@@ -32,7 +32,7 @@ exports.AppModule = AppModule = __decorate([
                 entities: [Apartment_1.Apartment, Project_1.Project, SalesPerson_1.SalesPerson],
                 synchronize: true,
             }),
-            typeorm_1.TypeOrmModule.forFeature([Apartment_1.Apartment, Project_1.Project]), // Import the entities
+            typeorm_1.TypeOrmModule.forFeature([Apartment_1.Apartment, Project_1.Project, SalesPerson_1.SalesPerson]), // Import the entities
         ],
         controllers: [ApartmentController_1.ApartmentController, ProjectController_1.ProjectController],
         providers: [ApartmentService_1.ApartmentService, ProjectService_1.ProjectService],

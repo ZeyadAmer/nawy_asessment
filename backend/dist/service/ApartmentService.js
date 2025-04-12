@@ -18,15 +18,22 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const Apartment_1 = require("../repositories/Apartment");
 const Project_1 = require("../repositories/Project");
+const SalesPerson_1 = require("../repositories/SalesPerson");
 let ApartmentService = class ApartmentService {
-    constructor(apartmentRepository, projectRepository) {
+    constructor(apartmentRepository, projectRepository, salesPersonRepository) {
         this.apartmentRepository = apartmentRepository;
         this.projectRepository = projectRepository;
+        this.salesPersonRepository = salesPersonRepository;
     }
     async createApartment(apartmentDto) {
-        const apartment = this.apartmentRepository.create(apartmentDto);
-        await this.apartmentRepository.save(apartment);
-        return apartment;
+        const project = await this.projectRepository.findOne({ where: { id: apartmentDto.projectId } });
+        const salesPerson = await this.salesPersonRepository.findOne({ where: { id: apartmentDto.salesPersonId } });
+        if (!project || !salesPerson) {
+            throw new Error('Invalid projectId or salesPersonId');
+        }
+        const apartment = this.apartmentRepository.create(Object.assign(Object.assign({}, apartmentDto), { project,
+            salesPerson }));
+        return await this.apartmentRepository.save(apartment);
     }
     async findApartmentById(id) {
         return this.apartmentRepository.findOne({ where: { id }, relations: ['project', 'salesPerson'] });
@@ -39,6 +46,9 @@ let ApartmentService = class ApartmentService {
             skip: (page - 1) * limit,
             take: limit,
             relations: ['project', 'salesPerson'],
+            order: {
+                id: 'ASC',
+            },
         });
         return {
             apartments,
@@ -61,13 +71,31 @@ let ApartmentService = class ApartmentService {
         apartment.project = project;
         return this.apartmentRepository.save(apartment);
     }
+    async findAllUsers(page = 1, limit = 10) {
+        const [salesPerson, total] = await this.salesPersonRepository.findAndCount({
+            skip: (page - 1) * limit,
+            take: limit,
+            order: {
+                id: 'ASC',
+            },
+        });
+        return {
+            salesPerson,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
+    }
 };
 exports.ApartmentService = ApartmentService;
 exports.ApartmentService = ApartmentService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(Apartment_1.Apartment)),
     __param(1, (0, typeorm_1.InjectRepository)(Project_1.Project)),
+    __param(2, (0, typeorm_1.InjectRepository)(SalesPerson_1.SalesPerson)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], ApartmentService);
 //Room for improvement create for users authority rules and check the token who is able to use which function

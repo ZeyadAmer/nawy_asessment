@@ -21,6 +21,19 @@ export class ApartmentController {
       apartment,
     };
   }
+  @Get('users')
+  async getAllUsers(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 9,
+  ) {
+    const salesPerson = await this.apartmentService.findAllUsers(Number(page), Number(limit));
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Users retrieved successfully',
+      salesPerson,
+    };
+  }
+
 
   @Get(':id')
   async getApartmentById(@Param('id') id: number) {
@@ -51,7 +64,7 @@ export class ApartmentController {
   @Get()
   async getAllApartments(
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('limit') limit: number = 9,
   ) {
     const apartments = await this.apartmentService.findAllApartments(Number(page), Number(limit));
     return {
@@ -60,7 +73,7 @@ export class ApartmentController {
       apartments,
     };
   }
-
+  
   @Patch(':apartmentId/assign-project/:projectId')
   async assignProject(
     @Param('apartmentId') apartmentId: number,

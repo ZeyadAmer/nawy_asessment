@@ -20,7 +20,7 @@ import { SalesPerson } from './repositories/SalesPerson';
       entities: [Apartment, Project,SalesPerson], 
       synchronize: true, 
     }),
-    TypeOrmModule.forFeature([Apartment, Project]), // Import the entities
+    TypeOrmModule.forFeature([Apartment, Project,SalesPerson]), // Import the entities
   ],
   controllers: [ApartmentController, ProjectController],
   providers: [ApartmentService, ProjectService],

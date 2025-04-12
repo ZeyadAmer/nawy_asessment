@@ -48,6 +48,7 @@ let ProjectService = class ProjectService {
         const [apartments, total] = await this.apartmentRepository
             .createQueryBuilder('apartment')
             .leftJoinAndSelect('apartment.salesPerson', 'salesPerson')
+            .leftJoinAndSelect('apartment.project', 'project')
             .where('apartment.projectId = :id', { id })
             .skip((page - 1) * limit)
             .take(limit)

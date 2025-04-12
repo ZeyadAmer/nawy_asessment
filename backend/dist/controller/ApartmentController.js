@@ -32,6 +32,14 @@ let ApartmentController = class ApartmentController {
             apartment,
         };
     }
+    async getAllUsers(page = 1, limit = 9) {
+        const salesPerson = await this.apartmentService.findAllUsers(Number(page), Number(limit));
+        return {
+            statusCode: common_1.HttpStatus.OK,
+            message: 'Users retrieved successfully',
+            salesPerson,
+        };
+    }
     async getApartmentById(id) {
         const apartment = await this.apartmentService.findApartmentById(id);
         if (!apartment) {
@@ -54,7 +62,7 @@ let ApartmentController = class ApartmentController {
             apartment,
         };
     }
-    async getAllApartments(page = 1, limit = 10) {
+    async getAllApartments(page = 1, limit = 9) {
         const apartments = await this.apartmentService.findAllApartments(Number(page), Number(limit));
         return {
             statusCode: common_1.HttpStatus.OK,
@@ -86,6 +94,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ApartmentController.prototype, "createApartment", null);
+__decorate([
+    (0, common_1.Get)('users'),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", Promise)
+], ApartmentController.prototype, "getAllUsers", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
